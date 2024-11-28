@@ -1,4 +1,4 @@
-package com.taskmanager.user_service.service;
+package com.example.task_service.service;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -15,21 +15,8 @@ public class JwtTokenService {
     @Value("${jwt.secret-key}")
     private String secretKey;
 
-    @Value("${jwt.expiration-time}")
-    private long expirationTime;
-
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(secretKey.getBytes());
-    }
-
-    public String generateToken(String username, String role) {
-        return Jwts.builder()
-                .setSubject(username)
-                .claim("role", role)  // добавление роли
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
-                .compact();
     }
 
     public String extractUsername(String token) {
@@ -38,7 +25,7 @@ public class JwtTokenService {
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
-                .getSubject();
+                .getSubject();  // Извлечение имени пользователя из токена
     }
 
     public String extractRole(String token) {
@@ -47,7 +34,7 @@ public class JwtTokenService {
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
-                .get("role", String.class); // извлечение роли
+                .get("role", String.class);  // Извлечение роли из токена
     }
 
     public boolean validateToken(String token, String username) {

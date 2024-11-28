@@ -2,6 +2,7 @@ package com.taskmanager.user_service.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.taskmanager.user_service.config.TestSecurityConfig;
+import com.taskmanager.user_service.model.Role;
 import com.taskmanager.user_service.model.User;
 import com.taskmanager.user_service.service.JwtTokenService;
 import com.taskmanager.user_service.service.UserService;
@@ -59,13 +60,15 @@ class AuthControllerTest {
     }
 
     @Test
-    void login_Success() throws Exception {
+    void login_Success_WithRole() throws Exception {
         // Arrange
         String username = "testuser";
         String password = "password123";
         String encodedPassword = passwordEncoder.encode(password);
-        String token = "mockJwtToken";
+        Role role = Role.ROLE_ADMIN;  // добавляем роль
+        String token = "mockJwtTokenWithRole";  // обновленный токен
 
+        // Создаем пользователя с ролью
         User user = new User();
         user.setUsername(username);
         user.setPassword(password);
@@ -73,16 +76,18 @@ class AuthControllerTest {
         User existingUser = new User();
         existingUser.setUsername(username);
         existingUser.setPassword(encodedPassword);
+        existingUser.setRole(role); // добавляем роль в пользователя
 
+        // Мокируем поведение сервисов
         Mockito.when(userService.getUserByUsername(eq(username))).thenReturn(Optional.of(existingUser));
-        Mockito.when(jwtTokenService.generateToken(eq(username))).thenReturn(token);
+        Mockito.when(jwtTokenService.generateToken(eq(username), eq(role.toString()))).thenReturn(token);
 
         // Act & Assert
         mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(user)))
+                        .content(objectMapper.writeValueAsString(user))) // передаем user в теле запроса
                 .andExpect(status().isOk())
-                .andExpect(content().string(token));
+                .andExpect(content().string(token)); // проверяем, что в ответе содержится токен
     }
 
     @Test

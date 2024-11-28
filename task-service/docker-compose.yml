@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:14
+    container_name: task_service_db
+    environment:
+      POSTGRES_DB: task_service_db   # Название базы данных
+      POSTGRES_USER: user           # Имя пользователя
+      POSTGRES_PASSWORD: password   # Пароль
+    ports:
+      - "5433:5432"                 # Пробрасываем порт PostgreSQL
+    volumes:
+      - postgres_data:/var/lib/postgresql/data   # Сохраняем данные базы данных
+    networks:
+      - task_service_network
+    restart: always
+
+networks:
+  task_service_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
