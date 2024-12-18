@@ -6,16 +6,17 @@ import com.taskmanager.user_service.service.UserService;
 import com.taskmanager.user_service.service.JwtTokenService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder;
     private final UserService userService;
     private final JwtTokenService jwtTokenService;
-    public AuthController(UserService userService, JwtTokenService jwtTokenService) {
-
+    public AuthController(UserService userService, JwtTokenService jwtTokenService, PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
         this.userService = userService;
         this.jwtTokenService = jwtTokenService;
     }

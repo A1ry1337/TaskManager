@@ -1,0 +1,21 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: task-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/tasks/**
+          filters:
+            - StripPrefix=2
+
+        - id: user-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/users/**
+          filters:
+            - StripPrefix=2
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.web.client: DEBUG

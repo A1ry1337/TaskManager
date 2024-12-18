@@ -18,11 +18,11 @@ public class Task {
     @Column(name = "description", nullable = false, columnDefinition = "TEXT")
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "created_by_user", nullable = false)
     private User createdBy;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "assigned_to_user", nullable = true)
     private User assignedTo;
 }
